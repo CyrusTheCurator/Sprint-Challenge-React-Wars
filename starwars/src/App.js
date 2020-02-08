@@ -20,8 +20,15 @@ const App = () => {
     axios
       .get(`https://swapi.co/api/people/?page=${currentPage}`)
       .then(response => {
-        setCurrentSearchResults(response.data.results);
-        setLoading(false);
+        if (response.data.next) {
+          setCurrentSearchResults(response.data.results);
+          console.log(response.data);
+          setLoading(false);
+        } else {
+          setLoading(false);
+
+          alert("You have reached the end of the list");
+        }
       })
       .catch(err => {
         console.log(`Error: ${err}`);
@@ -44,7 +51,7 @@ const App = () => {
       } else {
         setLoading(false);
 
-        alert("You have reached the end");
+        alert("You are already at the first page");
       }
     }
 
@@ -66,6 +73,7 @@ const App = () => {
   return (
     <div className="App">
       <h1 className="Header">React Wars</h1>
+      <h3>Page Number: {currentPage}</h3>
       <Button
         variant="primary"
         size="lg"
