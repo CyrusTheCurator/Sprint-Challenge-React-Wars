@@ -13,6 +13,7 @@ const App = () => {
   // the state properties here.
   let [currentPage, setCurrentPage] = useState(1);
   let [currentSearchResults, setCurrentSearchResults] = useState([]);
+  let [checkNextPage, setCheckNextPage] = useState();
 
   const [isLoading, setLoading] = useState(false);
 
@@ -22,7 +23,7 @@ const App = () => {
       .then(response => {
         if (response.data.next) {
           setCurrentSearchResults(response.data.results);
-          console.log(response.data);
+          setCheckNextPage(response.data.next);
           setLoading(false);
         } else {
           setLoading(false);
@@ -32,6 +33,9 @@ const App = () => {
       })
       .catch(err => {
         console.log(`Error: ${err}`);
+        console.log(err);
+        setLoading(false);
+        setCurrentPage(currentPage - 1);
       });
   }, [currentPage]);
   // Fetch characters from the star wars api in an effect hook. Remember, anytime you have a
@@ -54,10 +58,13 @@ const App = () => {
         alert("You are already at the first page");
       }
     }
-
+    console.log(currentSearchResults.data);
     if (arg === "right") {
-      console.log("movign right");
-      setCurrentPage(currentPage + 1);
+      if (checkNextPage === null) {
+        alert("You have reached the end of the list");
+      } else {
+        setCurrentPage(currentPage + 1);
+      }
     }
   };
 
